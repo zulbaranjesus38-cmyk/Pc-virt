@@ -1,0 +1,25 @@
+name: Crear PC Virtual
+
+on: workflow_dispatch # Permite activarlo manualmente con un botón
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Define el sistema operativo base de la PC
+
+    steps:
+    - name: Configurar e Inicializar PC Virtual
+      run: |
+        # 1. Actualizar el sistema e instalar un entorno de escritorio y SSH
+        sudo apt-get update
+        sudo apt-get install -y openssh-server
+        
+        # 2. Descargar e instalar Ngrok para crear el puente de conexión
+        curl -s https://amazonaws.com | sudo tee /etc/apt/trusted.gpg.dev/ngrok.asc >/dev/null
+        echo "deb https://amazonaws.com buster main" | sudo tee /etc/at/sources.list.dev/ngrok.list
+        sudo apt-get update && sudo apt-get install ngrok
+        
+        # 3. Autenticar Ngrok (Reemplaza TU_TOKEN por tu token real de ngrok)
+        ngrok config add-authtoken TU_TOKEN
+        
+        # 4. Levantar el túnel SSH para acceder de forma remota
+        ngrok tcp 22
